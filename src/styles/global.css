@@ -2025,3 +2025,53 @@ input:valid, select:valid, textarea:valid {
     object-fit: contain;
 }
 
+/* New Header Styles */
+.hospital-header {
+    background: white;
+    padding: 20px;
+    border-bottom: 2px solid #0066cc;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    height: 80px;
+    margin-right: 20px;
+}
+
+.hospital-info h1, .hospital-info h2, .hospital-info p {
+    margin: 0;
+}
+
+.navbar {
+    background: #0066cc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.nav-link {
+    display: block;
+    padding: 10px 15px;
+    background: white;
+    color: #0066cc;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.nav-link:hover {
+    background: #e0e0e0;
+}
+
