@@ -14,15 +14,17 @@ const Header = () => {
       </div>
 
       <nav className="navbar">
-        <div className="nav-grid">
-          <Link to="/" className="nav-link">IPD</Link>
-          <Link to="/doctors" className="nav-link">Doctors</Link>
-          <Link to="/bed" className="nav-link">Bed</Link>
-          <Link to="/new" className="nav-link">New</Link>
-          <Link to="/chart" className="nav-link">Chart</Link>
-          <Link to="/hindi" className="nav-link">Hindi</Link>
-          <Link to="/initial" className="nav-link">Initial</Link>
-          <Link to="/nursing-initial" className="nav-link">Nursing Initial</Link>
+        <div className="nav-bar-inner">
+          <div className="nav-grid">
+            <Link to="/" className="nav-link">IPD</Link>
+            <Link to="/doctors" className="nav-link">Doctors</Link>
+            <Link to="/bed" className="nav-link">Bed</Link>
+            <Link to="/new" className="nav-link">New</Link>
+            <Link to="/chart" className="nav-link">Chart</Link>
+            <Link to="/hindi" className="nav-link">Hindi</Link>
+            <Link to="/initial" className="nav-link">Initial</Link>
+            <Link to="/nursing-initial" className="nav-link">Nursing Initial</Link>
+          </div>
         </div>
       </nav>
     </header>
