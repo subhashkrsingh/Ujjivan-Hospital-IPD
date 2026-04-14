@@ -52,7 +52,6 @@ const Bed = () => {
   return (
     <div className="container mt-4 mb-4 p-4 border rounded form-container">
       <div className="text-center mb-3">
-        <img src="NTPC_Logo.svg.png" alt="NTPC Logo" className="logo" />
         <h4 className="fw-bold mt-2">UJJIVAN HOSPITAL, DADRI</h4>
         <h6 className="text-uppercase">Patient Bed Head Ticket</h6>
       </div>

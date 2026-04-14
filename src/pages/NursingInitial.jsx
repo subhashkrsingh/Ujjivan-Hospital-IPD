@@ -386,6 +386,7 @@ const NursingInitial = () => {
               { name: 'temperature', label: 'Temperature (°C)' },
               { name: 'pulse', label: 'Pulse (BPM)' },
               { name: 'respiration', label: 'Respiration (RPM)' },
+              { name: 'SPo2', label: 'SPo2' },
               { name: 'otherVital', label: 'Other' }
             ].map((item) => (
               <div key={item.name}>

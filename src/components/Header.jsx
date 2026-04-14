@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <header className="hospital-header">
-      <div className="header-top">
-        <img src="/NTPC_Logo.svg.png" alt="NTPC Logo" className="logo" />
+    <header className="header hospital-header">
+      <img src="/NTPC_Logo.svg.png" alt="NTPC Logo" className="header-logo" />
+      <div className="header-title">
         <div className="hospital-info">
           <h1>UJJIVAN HOSPITAL</h1>
           <p>PO. Vidyut Nagar, Distt. Gautam Budh Nagar</p>

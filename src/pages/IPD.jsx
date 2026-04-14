@@ -53,11 +53,6 @@ const IPD = () => {
   return (
     <div className="container mt-4 mb-4">
       <div className="consent-form-container">
-        {/* Logo Section */}
-        <div className="logo-container">
-          <img src="NTPC_Logo.svg.png" alt="NTPC Logo" className="logo" />
-        </div>
-
         {/* Header */}
         <div className="text-center mb-4">
           <h2 className="fw-bold">CONSENT FORM FOR SERIOUS PATIENTS</h2>
