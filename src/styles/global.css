@@ -1049,6 +1049,82 @@ textarea.alt-style {
     font-weight: 500;
 }
 
+.braden-scale-wrapper {
+    margin: 16px 0 24px;
+    padding: 16px;
+    border: 1px solid #d6e2f1;
+    border-radius: 8px;
+    background: #fcfeff;
+}
+
+.braden-scale-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.braden-scale-table th,
+.braden-scale-table td {
+    border: 1px solid #d7dee7;
+    padding: 10px 8px;
+    vertical-align: top;
+    font-size: 13px;
+}
+
+.braden-scale-table th {
+    background-color: #eaf3fb;
+    color: #0f4c81;
+    text-align: center;
+    font-weight: 700;
+}
+
+.braden-scale-table .parameter-cell {
+    width: 18%;
+    background-color: #f7fbff;
+    font-weight: 700;
+    color: #1f3b63;
+}
+
+.braden-scale-table .scale-cell {
+    width: 16%;
+    line-height: 1.45;
+}
+
+.braden-scale-table .score-cell {
+    width: 10%;
+    background-color: #f9fbfd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.braden-score-input {
+    width: 72px;
+    margin: 0 auto;
+    display: block;
+    font-weight: 700;
+}
+
+.braden-total-row td {
+    background-color: #fff4de;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.braden-total-value {
+    text-align: center;
+    color: #b54708;
+    font-size: 18px;
+}
+
+.braden-risk-note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-left: 4px solid #0066cc;
+    background-color: #eef6ff;
+    color: #1f3b63;
+    font-weight: 600;
+}
+
 /* ========== SPECIAL CONTAINERS ========== */
 
 /* Vital Signs Container */
@@ -1505,6 +1581,15 @@ input:valid, select:valid, textarea:valid {
     .fall-risk-table td {
         padding: 8px 5px;
         font-size: 12px;
+    }
+
+    .braden-scale-wrapper {
+        padding: 12px;
+        overflow-x: auto;
+    }
+
+    .braden-scale-table {
+        min-width: 860px;
     }
     
     .signature-container,

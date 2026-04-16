@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import BradenScaleTable from '../components/BradenScaleTable';
 
 const NursingInitial = () => {
   const [formData, setFormData] = useState({
@@ -57,6 +58,7 @@ const NursingInitial = () => {
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const [bradenScores, setBradenScores] = useState(() => Array(6).fill(0));
 
   const fallRiskTotal = useMemo(() => {
     return [
@@ -74,6 +76,8 @@ const NursingInitial = () => {
     if (fallRiskTotal > 24) return 'Medium Risk';
     return 'Low Risk';
   }, [fallRiskTotal]);
+
+  const shouldShowBradenScale = formData.skinCheck !== '';
 
   useEffect(() => {
     if (formData.patientAccompanied !== 'yes') {
@@ -593,6 +597,13 @@ const NursingInitial = () => {
           </div>
           {errors.skinCheck && <div className="error-message" style={{ display: 'block' }}>{errors.skinCheck}</div>}
           {errors.ivLine && <div className="error-message" style={{ display: 'block' }}>{errors.ivLine}</div>}
+
+          {shouldShowBradenScale && (
+            <BradenScaleTable
+              initialScores={bradenScores}
+              onScoresChange={setBradenScores}
+            />
+          )}
 
           <div className="section-title" style={{ marginTop: '25px' }}>Fall Risk Assessment (Modified Morse Scale)</div>
           <table className="fall-risk-table">
