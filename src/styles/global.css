@@ -1125,6 +1125,13 @@ textarea.alt-style {
     font-weight: 600;
 }
 
+.braden-guideline-text {
+    margin-top: 10px;
+    color: #5c6b7a;
+    font-size: 13px;
+    font-style: italic;
+}
+
 /* ========== SPECIAL CONTAINERS ========== */
 
 /* Vital Signs Container */

@@ -80,7 +80,7 @@ const BradenScaleTable = ({ initialScores = DEFAULT_SCORES, onScoresChange }) =>
       return;
     }
 
-    const sanitizedValue = Math.min(5, Math.max(0, parsedValue));
+    const sanitizedValue = Math.min(4, Math.max(0, parsedValue));
 
     setScores((prev) => {
       const nextScores = [...prev];
@@ -128,7 +128,7 @@ const BradenScaleTable = ({ initialScores = DEFAULT_SCORES, onScoresChange }) =>
                 <input
                   type="number"
                   min={0}
-                  max={5}
+                  max={4}
                   inputMode="numeric"
                   className="score-input braden-score-input"
                   value={scores[index]}
@@ -146,6 +146,9 @@ const BradenScaleTable = ({ initialScores = DEFAULT_SCORES, onScoresChange }) =>
 
       <div className="braden-risk-note">
         Risk Classification: <strong>{riskClassification}</strong>
+      </div>
+      <div className="braden-guideline-text">
+        15-16 = mild risk, 12-14 = moderate risk, &lt;11 = severe risk
       </div>
     </div>
   );
