@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getErrorMessage, postJson } from '../lib/apiClient';
 
 const Doctors = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,8 @@ const Doctors = () => {
 
   const [responseMessage, setResponseMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const [responseType, setResponseType] = useState('success');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Set current date and time
@@ -102,23 +105,22 @@ const Doctors = () => {
       return;
     }
 
+    setIsSubmitting(true);
+    setResponseMessage('');
+
     try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        formDataToSend.append(key, formData[key]);
+      const result = await postJson('doctor-notes/progress.php', {
+        ...formData,
+        formType: 'progressSheet',
+        hospitalName: 'NCRS HOSPITAL',
       });
-      formDataToSend.append('formType', 'progressSheet');
-      formDataToSend.append('hospitalName', 'NCRS HOSPITAL');
-
-      const response = await fetch('save_progress.php', {
-        method: 'POST',
-        body: formDataToSend
-      });
-
-      const result = await response.text();
-      setResponseMessage(result);
+      setResponseType('success');
+      setResponseMessage(result.message);
     } catch (error) {
-      setResponseMessage('Error submitting form');
+      setResponseType('error');
+      setResponseMessage(getErrorMessage(error, 'Unable to save the progress note.'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -168,7 +170,16 @@ const Doctors = () => {
       </div>
 
       {/* Response Message */}
-      <div id="responseMessage" className="response-message" style={{ display: responseMessage ? 'block' : 'none' }}>
+      <div
+        id="responseMessage"
+        className={`response-message ${responseType === 'success' ? 'success' : ''}`}
+        style={{
+          display: responseMessage ? 'block' : 'none',
+          backgroundColor: responseType === 'error' ? '#fff1f2' : undefined,
+          color: responseType === 'error' ? '#991b1b' : undefined,
+          borderColor: responseType === 'error' ? '#fecdd3' : undefined,
+        }}
+      >
         {responseMessage}
       </div>
 
@@ -357,9 +368,9 @@ const Doctors = () => {
         </div>
 
         {/* Submit Section */}
-        <div className="submit-section">
-          <button type="submit" className="btn-submit">
-            <i className="fas fa-file-medical"></i> SAVE PROGRESS SHEET
+          <div className="submit-section">
+          <button type="submit" className="btn-submit" disabled={isSubmitting}>
+            <i className="fas fa-file-medical"></i> {isSubmitting ? 'SAVING...' : 'SAVE PROGRESS SHEET'}
           </button>
         </div>
 

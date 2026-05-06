@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import BradenScaleTable from '../components/BradenScaleTable';
+import { getErrorMessage, postJson } from '../lib/apiClient';
 
 const NursingInitial = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,7 @@ const NursingInitial = () => {
     temperature: '',
     pulse: '',
     respiration: '',
+    SPo2: '',
     otherVital: '',
     painPresent: '',
     painScore: '',
@@ -57,8 +59,10 @@ const NursingInitial = () => {
     orderDatetime: ''
   });
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [bradenScores, setBradenScores] = useState(() => Array(6).fill(0));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fallRiskTotal = useMemo(() => {
     return [
@@ -140,14 +144,29 @@ const NursingInitial = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    setSuccessMessage('Nursing assessment submitted successfully!');
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 8000);
+    setIsSubmitting(true);
+    setErrorMessage('');
+
+    try {
+      const result = await postJson('nursing-assessments/create.php', {
+        ...formData,
+        bradenScores,
+        fallRiskTotal,
+        fallRiskInterpretation
+      });
+      setSuccessMessage(result.message);
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 8000);
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error, 'Unable to save the nursing assessment.'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -161,6 +180,12 @@ const NursingInitial = () => {
         {successMessage && (
           <div className="response-message success" style={{ display: 'block', marginBottom: '20px' }}>
             {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="response-message" style={{ display: 'block', marginBottom: '20px', backgroundColor: '#fff1f2', color: '#991b1b', borderColor: '#fecdd3' }}>
+            {errorMessage}
           </div>
         )}
 
@@ -765,8 +790,8 @@ const NursingInitial = () => {
           </div>
 
           <div className="submit-section">
-            <button type="submit" className="btn-submit">
-              Submit Nursing Assessment
+            <button type="submit" className="btn-submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving Nursing Assessment...' : 'Submit Nursing Assessment'}
             </button>
             <button type="button" className="btn" onClick={() => window.print()} style={{ marginLeft: '10px' }}>
               Print Form

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getErrorMessage, postJson } from '../lib/apiClient';
 
 const Bed = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,8 @@ const Bed = () => {
   });
 
   const [responseMessage, setResponseMessage] = useState('');
+  const [responseType, setResponseType] = useState('success');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -30,22 +33,18 @@ const Bed = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setResponseMessage('');
 
     try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        formDataToSend.append(key, formData[key]);
-      });
-
-      const response = await fetch('save_bed_ticket.php', {
-        method: 'POST',
-        body: formDataToSend
-      });
-
-      const result = await response.text();
-      setResponseMessage(result);
+      const result = await postJson('admissions/create.php', formData);
+      setResponseType('success');
+      setResponseMessage(result.message);
     } catch (error) {
-      setResponseMessage('Error submitting form');
+      setResponseType('error');
+      setResponseMessage(getErrorMessage(error, 'Unable to save the admission details.'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -57,7 +56,16 @@ const Bed = () => {
       </div>
 
       {/* Response Message */}
-      <div id="responseMessage" className="response-message" style={{ display: responseMessage ? 'block' : 'none' }}>
+      <div
+        id="responseMessage"
+        className={`response-message ${responseType === 'success' ? 'success' : ''}`}
+        style={{
+          display: responseMessage ? 'block' : 'none',
+          backgroundColor: responseType === 'error' ? '#fff1f2' : undefined,
+          color: responseType === 'error' ? '#991b1b' : undefined,
+          borderColor: responseType === 'error' ? '#fecdd3' : undefined,
+        }}
+      >
         {responseMessage}
       </div>
 
@@ -262,7 +270,9 @@ const Bed = () => {
         </div>
 
         <div className="text-center mt-4">
-          <button type="submit" className="btn btn-primary px-5">Submit</button>
+          <button type="submit" className="btn btn-primary px-5" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Submit'}
+          </button>
         </div>
       </form>
     </div>

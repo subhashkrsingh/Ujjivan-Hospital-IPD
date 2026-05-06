@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getErrorMessage, postJson } from '../lib/apiClient';
 
 const New = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const New = () => {
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
@@ -86,45 +88,30 @@ const New = () => {
 
     setIsSubmitting(true);
     setSuccessMessage('');
+    setErrorMessage('');
 
     try {
-      const response = await fetch('submit_form.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          ordersLegible: formData.ordersLegible ? 'Yes' : 'No'
-        }),
+      const result = await postJson('doctor-notes/consultant.php', formData);
+      setSuccessMessage(result.message);
+      setFormData({
+        patientId: '',
+        consultationDate: '',
+        investigations: '',
+        treatment: '',
+        figure: '',
+        rmoName: '',
+        rmoSignatureTime: '',
+        consultantName: '',
+        consultantSignatureTime: '',
+        ordersLegible: false
       });
+      setErrors({});
 
-      if (response.ok) {
-        setSuccessMessage('Form submitted successfully!');
-        setFormData({
-          patientId: '',
-          consultationDate: '',
-          investigations: '',
-          treatment: '',
-          figure: '',
-          rmoName: '',
-          rmoSignatureTime: '',
-          consultantName: '',
-          consultantSignatureTime: '',
-          ordersLegible: false
-        });
-        setErrors({});
-
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          setSuccessMessage('');
-        }, 5000);
-      } else {
-        throw new Error('Failed to submit form');
-      }
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form. Please try again.');
+      setErrorMessage(getErrorMessage(error, 'Unable to save the consultant note.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -140,6 +127,12 @@ const New = () => {
       {successMessage && (
         <div className="success-message" style={{ display: 'block' }}>
           <i className="fas fa-check-circle"></i> {successMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="response-message" style={{ display: 'block', backgroundColor: '#fff1f2', color: '#991b1b', borderColor: '#fecdd3' }}>
+          <i className="fas fa-circle-exclamation"></i> {errorMessage}
         </div>
       )}
 
@@ -295,7 +288,7 @@ const New = () => {
         </div>
 
         <button type="submit" className="submit-btn" disabled={isSubmitting}>
-          <i className="fas fa-paper-plane"></i> {isSubmitting ? 'Submitting...' : 'Submit Form'}
+          <i className="fas fa-paper-plane"></i> {isSubmitting ? 'Saving...' : 'Submit Form'}
         </button>
       </form>
 

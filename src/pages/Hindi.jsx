@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getErrorMessage, postJson } from '../lib/apiClient';
 
 const Hindi = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,9 @@ const Hindi = () => {
     witnessMobile: ''
   });
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,39 +71,49 @@ const Hindi = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validate()) {
       return;
     }
 
-    setSuccessMessage('आपका सहमति पत्र सफलतापूर्वक जमा किया गया है। धन्यवाद!');
-    setFormData({
-      name: '',
-      relative: '',
-      age: '',
-      gender: '',
-      address: '',
-      patientName: '',
-      relationship: '',
-      signatureDate: '',
-      fatherName: '',
-      location: '',
-      time: '',
-      mobile: '',
-      witnessName: '',
-      witnessRelation: '',
-      witnessDate: '',
-      witnessFatherName: '',
-      witnessLocation: '',
-      witnessTime: '',
-      witnessMobile: ''
-    });
+    setIsSubmitting(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 5000);
+    try {
+      const result = await postJson('consents/hindi-consent.php', formData);
+      setSuccessMessage(result.message);
+      setFormData({
+        name: '',
+        relative: '',
+        age: '',
+        gender: '',
+        address: '',
+        patientName: '',
+        relationship: '',
+        signatureDate: '',
+        fatherName: '',
+        location: '',
+        time: '',
+        mobile: '',
+        witnessName: '',
+        witnessRelation: '',
+        witnessDate: '',
+        witnessFatherName: '',
+        witnessLocation: '',
+        witnessTime: '',
+        witnessMobile: ''
+      });
+
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error, 'सहमति पत्र सहेजा नहीं जा सका।'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -114,6 +127,12 @@ const Hindi = () => {
         {successMessage && (
           <div className="response-message success" style={{ display: 'block' }}>
             {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="response-message" style={{ display: 'block', backgroundColor: '#fff1f2', color: '#991b1b', borderColor: '#fecdd3' }}>
+            {errorMessage}
           </div>
         )}
 
@@ -197,7 +216,7 @@ const Hindi = () => {
 
           <div className="consent-text">
             <p>
-              घोषणा करता हूँ कि मुझे मेरे मरीज
+              घोषणा करता/करती हूँ कि मुझे मेरे मरीज
               <input
                 type="text"
                 name="patientName"
@@ -380,8 +399,8 @@ const Hindi = () => {
           </div>
 
           <div className="submit-section">
-            <button type="submit" className="submit-btn">
-              सहमति पत्र सबमिट करें
+            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              {isSubmitting ? 'सहेजा जा रहा है...' : 'सहमति पत्र सबमिट करें'}
             </button>
             <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
               सभी आवश्यक फ़ील्ड भरने के बाद सबमिट करें

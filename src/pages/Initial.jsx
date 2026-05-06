@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { getErrorMessage, postJson } from '../lib/apiClient';
+
+const generateIdentifiers = () => ({
+  unid: `UN${Math.floor(10000 + Math.random() * 90000)}`,
+  ipd: `IPD${Math.floor(1000 + Math.random() * 9000)}`
+});
 
 const Initial = () => {
   const [formData, setFormData] = useState({
@@ -34,14 +40,14 @@ const Initial = () => {
     ordersLegible: false
   });
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      unid: `UN${Math.floor(10000 + Math.random() * 90000)}`,
-      ipd: `IPD${Math.floor(1000 + Math.random() * 9000)}`
+      ...generateIdentifiers()
     }));
   }, []);
 
@@ -94,17 +100,19 @@ const Initial = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
-      setSuccessMessage('Assessment submitted successfully!');
-      setIsSubmitting(false);
-      setFormData((prev) => ({
-        ...prev,
+    try {
+      const result = await postJson('doctor-notes/initial-assessment.php', formData);
+      const nextIdentifiers = generateIdentifiers();
+      setSuccessMessage(result.message);
+      setFormData({
+        ...nextIdentifiers,
         patientName: '',
         age: '',
         gender: '',
@@ -133,9 +141,14 @@ const Initial = () => {
         consultantName: '',
         consultantSignatureTime: '',
         ordersLegible: false
-      }));
+      });
+      setErrors({});
       setTimeout(() => setSuccessMessage(''), 8000);
-    }, 1200);
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error, 'Unable to save the initial assessment.'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -159,6 +172,12 @@ const Initial = () => {
       {successMessage && (
         <div className="response-message success" style={{ display: 'block', marginTop: '20px' }}>
           {successMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="response-message" style={{ display: 'block', marginTop: '20px', backgroundColor: '#fff1f2', color: '#991b1b', borderColor: '#fecdd3' }}>
+          {errorMessage}
         </div>
       )}
 

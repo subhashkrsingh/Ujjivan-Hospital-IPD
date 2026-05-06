@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
+  const logoSrc = `${import.meta.env.BASE_URL}NTPC_Logo.svg.png`;
+
   return (
     <header className="header hospital-header">
-      <img src="/NTPC_Logo.svg.png" alt="NTPC Logo" className="header-logo" />
+      <img src={logoSrc} alt="NTPC Logo" className="header-logo" />
       <div className="header-title">
         <div className="hospital-info">
           <h1>UJJIVAN HOSPITAL</h1>
